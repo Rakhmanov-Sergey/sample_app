@@ -1,0 +1,6 @@
+cls
+@echo off
+title Testing...
+cd C:\$ergey\RailsProjects\sample_app
+echo Testing...
+bundle exec rspec spec/requests/static_pages_spec.rb

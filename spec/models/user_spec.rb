@@ -60,6 +60,17 @@ describe "User -" do
     it "Should not be valid" do should_not be_valid end
   end
 
+  describe "When email address is in uppercase -" do
+    before { @user.email = "UPPERCASE@MAIL.COM" }
+    let(:mixed_case_email) {@user.email}
+
+    it "Should be transformed to downcase" do
+      @user.save
+      expect(@user.reload.email).to eq mixed_case_email.downcase
+    end
+
+  end
+
   describe "When password is not present -" do
     before { @user.password = @user.password_confirmation = " " }
     it "Should not be valid" do should_not be_valid end
@@ -67,27 +78,27 @@ describe "User -" do
 
   describe "When password doesn't match confirmation -" do
     before { @user.password_confirmation = "mismatch" }
-    it { should_not be_valid }
+    it "Should not be valid" do should_not be_valid end
   end
 
-  describe "With a password that's too short" do
+  describe "When password is too short -" do
     before { @user.password = @user.password_confirmation = "a" * 5 }
-    it { should be_invalid }
+    it "Should not be valid" do should_not be_valid end
   end
 
   describe "Return value of authenticate method -" do
     before { @user.save }
     let(:found_user) { User.find_by(email: @user.email) }
 
-    describe "With valid password" do
-      it { should eq found_user.authenticate(@user.password) }
+    describe "With valid password -" do
+      it "Should be user" do should eq found_user.authenticate(@user.password) end
     end
 
-    describe "With invalid password" do
+    describe "With invalid password -" do
       let(:user_for_invalid_password) { found_user.authenticate("invalid") }
 
-      it { should_not eq user_for_invalid_password }
-      specify { expect(user_for_invalid_password).to be_false }
+      it "Should not be user" do should_not eq user_for_invalid_password end
+      it "Should be null" do expect(user_for_invalid_password).to be_false end
     end
   end
 end

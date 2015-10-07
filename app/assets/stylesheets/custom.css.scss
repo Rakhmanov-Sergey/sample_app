@@ -11,6 +11,12 @@ $grayMediumLight: #eaeaea;
   box-sizing: border-box;
 }
 
+@mixin gravatar_circle {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}
+
 /* universal */
 
 html {
@@ -152,6 +158,7 @@ aside {
 .gravatar {
   float: left;
   margin-right: 10px;
+  @include gravatar_circle;
 }
 
 .gravatar_edit {

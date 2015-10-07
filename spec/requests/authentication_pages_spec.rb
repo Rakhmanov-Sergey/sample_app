@@ -32,6 +32,11 @@ describe "Authentication -" do
       it "Should have link to profile"    do should have_link('Profile', href: user_path(user)) end
       it "Should have link to signOut"    do should have_link('Sign out', href: signout_path) end
       it "Should have link to signIn"     do should_not have_link('Sign in', href: signin_path) end
+
+      describe "Followed by sign out -" do
+        before { click_link "Sign out" }
+        it "Should have link sign in" do should have_link('Sign in') end
+      end
     end
 
     it "Should have content 'Sing in'" do should have_content('Sign in') end

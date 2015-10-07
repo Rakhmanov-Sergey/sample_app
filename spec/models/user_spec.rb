@@ -13,6 +13,7 @@ describe "User -" do
   it "Should respond to password"             do should respond_to(:password) end
   it "Should respond to pasword_confirmation" do should respond_to(:password_confirmation) end
   it "Should respond to authenticate"         do should respond_to(:authenticate) end
+  it "Should respond to remember_token"       do should respond_to(:remember_token) end
   it "Should be valid"                        do should be_valid end
 
   describe "When name is not present -" do
@@ -100,5 +101,10 @@ describe "User -" do
       it "Should not be user" do should_not eq user_for_invalid_password end
       it "Should be null" do expect(user_for_invalid_password).to be_false end
     end
+  end
+
+  describe "Remember token -" do
+    before { @user.save }
+    it "Should not be blank" do expect(@user.remember_token).not_to be_blank end
   end
 end

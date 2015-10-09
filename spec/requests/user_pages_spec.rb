@@ -53,4 +53,44 @@ describe "User pages -" do
     it "Should have user name in content " do should have_content(name) end
     it "Should have user name in title "   do should have_title(name) end
   end
+
+  describe "Edit page -" do
+    let(:user) { FactoryGirl.create(:user) }
+    before do
+      sign_in user
+      visit edit_user_path(user)
+    end
+
+    it "Should have content 'Update your profile'" do should have_content("Update your profile") end
+    it "Should have title 'Edit user'"             do should have_title("Edit user") end
+
+    it "Should have link to change gravatar" do
+      should have_link('change', href: 'http://gravatar.com/emails')
+    end
+
+    describe "With invalid information -" do
+      before { click_button "Save changes" }
+
+      it "Should have content 'Error'" do should have_content('error') end
+    end
+
+    describe "With valid information -" do
+      let(:new_name)  { "New Name" }
+      let(:new_email) { "new@example.com" }
+      before do
+        fill_in "Name",             with: new_name
+        fill_in "Email",            with: new_email
+        fill_in "Password",         with: user.password
+        fill_in "Confirm Password", with: user.password
+        click_button "Save changes"
+      end
+
+      it "Should have new user name in title"   do should have_title(new_name) end
+      it "Should have selector 'alert-success'" do should have_selector('div.alert.alert-success') end
+      it "Should have link 'Sign Out'"          do should have_link('Sign out', href: signout_path) end
+
+      specify "Expect name to change"  do expect(user.reload.name).to  eq new_name end
+      specify "Expect email to change" do expect(user.reload.email).to eq new_email end
+    end
+  end
 end

@@ -25,6 +25,7 @@ describe "Authentication -" do
       before { sign_in user}
 
       it "Should have user name in title" do should have_title(user.name) end
+      it "Should have link to users"      do should have_link('Users', href: users_path) end
       it "Should have link to profile"    do should have_link('Profile', href: user_path(user)) end
       it "Should have link to settings"   do should have_link('Settings', href: edit_user_path(user)) end
       it "Should have link to signOut"    do should have_link('Sign out', href: signout_path) end
@@ -71,6 +72,11 @@ describe "Authentication -" do
         describe "Submitting to the update action -" do
           before { patch user_path(user) }
           specify "Should redirect to sign in" do expect(response).to redirect_to(signin_path) end
+        end
+
+        describe "Visiting the user index -" do
+          before { visit users_path }
+          it "Should have title 'Sign in'" do should have_title('Sign in') end
         end
       end
     end

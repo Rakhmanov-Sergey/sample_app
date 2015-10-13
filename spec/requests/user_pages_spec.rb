@@ -27,6 +27,31 @@ describe "User pages -" do
         end
       end
     end
+
+    describe "Delete links -" do
+
+      it "Should not have link 'Delete'" do should_not have_link('delete') end
+
+      describe "As an admin user -" do
+        let(:admin) { FactoryGirl.create(:admin) }
+        before do
+          sign_in admin
+          visit users_path
+        end
+
+        it "Should have link 'Delete'" do should have_link('delete', href: user_path(User.first)) end
+
+        it "Should be able to delete another user" do
+          expect do
+            click_link('delete', match: :first)
+          end.to change(User, :count).by(-1)
+        end
+
+        it "Should not be able to delet himself" do
+          should_not have_link('delete', href: user_path(admin))
+        end
+      end
+    end
   end
 
   describe "SignUp page -" do

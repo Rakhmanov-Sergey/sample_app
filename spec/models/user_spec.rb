@@ -14,7 +14,18 @@ describe "User -" do
   it "Should respond to pasword_confirmation" do should respond_to(:password_confirmation) end
   it "Should respond to authenticate"         do should respond_to(:authenticate) end
   it "Should respond to remember_token"       do should respond_to(:remember_token) end
+  it "Should respond to admin"                do should respond_to(:admin) end
   it "Should be valid"                        do should be_valid end
+  it "Should not be admin"                    do should_not be_admin end
+
+  describe "With admin attribute set to 'true' -" do
+    before do
+      @user.save!
+      @user.toggle!(:admin)
+    end
+
+    it "Should be admin" do should be_admin end
+  end
 
   describe "When name is not present -" do
     before { @user.name = " " }

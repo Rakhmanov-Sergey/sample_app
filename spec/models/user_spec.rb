@@ -15,6 +15,7 @@ describe "User -" do
   it "Should respond to authenticate"         do should respond_to(:authenticate) end
   it "Should respond to remember_token"       do should respond_to(:remember_token) end
   it "Should respond to admin"                do should respond_to(:admin) end
+  it "Should respond to microposts"           do should respond_to(:microposts) end
   it "Should be valid"                        do should be_valid end
   it "Should not be admin"                    do should_not be_admin end
 
@@ -117,5 +118,28 @@ describe "User -" do
   describe "Remember token -" do
     before { @user.save }
     it "Should not be blank" do expect(@user.remember_token).not_to be_blank end
+  end
+
+  describe "Micropost associations -" do
+    before { @user.save }
+    let!(:older_micropost) do
+      FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+    end
+    let!(:newer_micropost) do
+      FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
+    end
+
+    it "Should have the right microposts in the right order" do
+      expect(@user.microposts.to_a).to eq [newer_micropost, older_micropost]
+    end
+
+    it "Should destroy associated microposts" do
+      microposts = @user.microposts.to_a
+      @user.destroy
+      expect(microposts).not_to be_empty
+      microposts.each do |micropost|
+        expect(Micropost.where(id: micropost.id)).to be_empty
+      end
+    end
   end
 end

@@ -95,13 +95,20 @@ describe "User pages -" do
   end
 
   describe "Profile page -" do
+    let(:user) { FactoryGirl.create(:user) }
+    let!(:m1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
+    let!(:m2) { FactoryGirl.create(:micropost, user: user, content: "Bar") }
+
     before { visit user_path(user) }
 
-    let(:user) { FactoryGirl.create(:user) }
-    let(:name) {user.name}
+    it "Should have user name in content" do should have_content(user.name) end
+    it "Should have user name in title"   do should have_title(user.name) end
 
-    it "Should have user name in content " do should have_content(name) end
-    it "Should have user name in title "   do should have_title(name) end
+    describe "Microposts -" do
+      it "Should have m1 in content"                do should have_content(m1.content) end
+      it "Should have m2 in content"                do should have_content(m2.content) end
+      it "Should have microposts number in content" do should have_content(user.microposts.count) end
+    end
   end
 
   describe "Edit page -" do

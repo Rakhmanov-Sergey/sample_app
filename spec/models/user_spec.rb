@@ -17,6 +17,11 @@ describe "User -" do
   it "Should respond to admin"                do should respond_to(:admin) end
   it "Should respond to microposts"           do should respond_to(:microposts) end
   it "Should respond to feed"                 do should respond_to(:feed) end
+  it "Should respond to relationships"        do should respond_to(:relationships) end
+  it "Should respond to followed user"        do should respond_to(:followed_users) end
+  it "Should respond to following?"           do should respond_to(:following?) end
+  it "Should respond to follow!"              do should respond_to(:follow!) end
+  it "Should respond to unfollow!"            do should respond_to(:unfollow!) end
   it "Should be valid"                        do should be_valid end
   it "Should not be admin"                    do should_not be_admin end
 
@@ -155,6 +160,30 @@ describe "User -" do
 
       describe "Should not include unfollowed post" do
         its(:feed) { should_not include(unfollowed_post) }
+      end
+    end
+  end
+
+  describe "Following" do
+    let(:other_user) { FactoryGirl.create(:user) }
+    before do
+      @user.save
+      @user.follow!(other_user)
+    end
+
+    it "Should be following other_user" do should be_following(other_user) end
+
+    describe "other_user should be in user.followed_uses array" do
+      its(:followed_users) { should include(other_user) }
+    end
+
+    describe "And unfollowing" do
+      before { @user.unfollow!(other_user) }
+
+      it "Should not be follow other_user" do should_not be_following(other_user) end
+
+      describe "other_user should not be in user.followed_uses array" do
+        its(:followed_users) { should_not include(other_user) }
       end
     end
   end

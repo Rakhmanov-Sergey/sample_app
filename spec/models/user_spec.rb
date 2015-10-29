@@ -19,6 +19,8 @@ describe "User -" do
   it "Should respond to feed"                 do should respond_to(:feed) end
   it "Should respond to relationships"        do should respond_to(:relationships) end
   it "Should respond to followed user"        do should respond_to(:followed_users) end
+  it { should respond_to(:reverse_relationships) }
+  it { should respond_to(:followers) }
   it "Should respond to following?"           do should respond_to(:following?) end
   it "Should respond to follow!"              do should respond_to(:follow!) end
   it "Should respond to unfollow!"            do should respond_to(:unfollow!) end
@@ -185,6 +187,11 @@ describe "User -" do
       describe "other_user should not be in user.followed_uses array" do
         its(:followed_users) { should_not include(other_user) }
       end
+    end
+
+    describe "followed user" do
+      subject { other_user }
+      its(:followers) { should include(@user) }
     end
   end
 end

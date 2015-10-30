@@ -114,6 +114,18 @@ describe "Authentication -" do
           it "Should have title 'Sign in'" do should have_title('Sign in') end
         end
       end
+
+      describe "In the Relationships controller" do
+        describe "Submitting to the create action" do
+          before { post relationships_path }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
+
+        describe "Submitting to the destroy action" do
+          before { delete relationship_path(1) }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
+      end
     end
 
     describe "As wrong user -" do

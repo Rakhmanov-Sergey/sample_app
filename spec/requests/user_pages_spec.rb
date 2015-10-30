@@ -109,6 +109,56 @@ describe "User pages -" do
       it "Should have m2 in content"                do should have_content(m2.content) end
       it "Should have microposts number in content" do should have_content(user.microposts.count) end
     end
+
+    describe "Follow/unfollow buttons" do
+      let(:other_user) { FactoryGirl.create(:user) }
+      before { sign_in user }
+
+      describe "Following a user" do
+        before { visit user_path(other_user) }
+
+        it "Should increment the followed user count" do
+          expect do
+            click_button "Follow"
+          end.to change(user.followed_users, :count).by(1)
+        end
+
+        it "Should increment the other user's followers count" do
+          expect do
+            click_button "Follow"
+          end.to change(other_user.followers, :count).by(1)
+        end
+
+        describe "Toggling the button" do
+          before { click_button "Follow" }
+          it { should have_xpath("//input[@value='Unfollow']") }
+        end
+      end
+
+      describe "Unfollowing a user" do
+        before do
+          user.follow!(other_user)
+          visit user_path(other_user)
+        end
+
+        it "Should decrement the followed user count" do
+          expect do
+            click_button "Unfollow"
+          end.to change(user.followed_users, :count).by(-1)
+        end
+
+        it "Should decrement the other user's followers count" do
+          expect do
+            click_button "Unfollow"
+          end.to change(other_user.followers, :count).by(-1)
+        end
+
+        describe "Toggling the button" do
+          before { click_button "Unfollow" }
+          it { should have_xpath("//input[@value='Follow']") }
+        end
+      end
+    end
   end
 
   describe "Edit page -" do

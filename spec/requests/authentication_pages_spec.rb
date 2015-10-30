@@ -103,6 +103,16 @@ describe "Authentication -" do
           before { visit users_path }
           it "Should have title 'Sign in'" do should have_title('Sign in') end
         end
+
+        describe "Visiting the following page" do
+          before { visit following_user_path(user) }
+          it "Should have title 'Sign in'" do should have_title('Sign in') end
+        end
+
+        describe "Visiting the followers page" do
+          before { visit followers_user_path(user) }
+          it "Should have title 'Sign in'" do should have_title('Sign in') end
+        end
       end
     end
 

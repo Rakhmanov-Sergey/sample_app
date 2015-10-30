@@ -150,4 +150,36 @@ describe "User pages -" do
       specify "Expect email to change" do expect(user.reload.email).to eq new_email end
     end
   end
+
+  describe "Following/followers page" do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:other_user) { FactoryGirl.create(:user) }
+    before { user.follow!(other_user) }
+
+    describe "Followed users" do
+      before do
+        sign_in user
+        visit following_user_path(user)
+      end
+
+      it "Should have title 'Following'"    do should have_title(full_title('Following')) end
+      it "Should have 'Following' in text"  do should have_selector('h3', text: 'Following') end
+      it "Should have a link to other_user" do
+        should have_link(other_user.name, href: user_path(other_user))
+      end
+    end
+
+    describe "Followers" do
+      before do
+        sign_in other_user
+        visit followers_user_path(other_user)
+      end
+
+      it "Should have title 'Followers'"    do should have_title(full_title('Followers')) end
+      it "Should have 'Followers' in text"  do should have_selector('h3', text: 'Followers') end
+      it "Should have a link to user" do
+        should have_link(user.name, href: user_path(user))
+      end
+    end
+  end
 end
